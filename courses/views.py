@@ -3,8 +3,10 @@ from __future__ import unicode_literals
 
 from django.shortcuts import render
 from django.views.generic import ListView, DetailView,View
-from .models import Course
+from .models import Course, Lesson
 from memberships.models import UserMembership
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 class CourseListView(ListView):
     model = Course 
@@ -23,16 +25,17 @@ class LessonDetailView(View):
         if lesson_qs.exists():
             lesson = lesson_qs.first()
 
-        user_membership = UserMembership.object.filter(user=request.user).first()
+        user_membership = UserMembership.objects.filter(user=request.user).first()
+
         user_membership_type = user_membership.membership.membership_type
 
         course_allowed_mem_types = course.allowed_memberships.all()
 
-        context = { 
-            'object': None
+        context = {
+            'object' : None
         }
-
+ 
         if course_allowed_mem_types.filter(membership_type=user_membership_type).exists():
             context = {'object': lesson}
 
-        return render(request, "courses/lesson_detail.html", context)
+        return render(request, "courses/lesson_detail.html", context) 

@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.urls import reverse
-from django.core.urlresolvers import reverse
+
 from memberships.models import Membership
 
 
@@ -17,10 +17,10 @@ class Course(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse("courses:detail", kwargs={"slug": self.slug})
+        return reverse("courses:detail", kwargs={'slug': self.slug})
 
     @property
-    def lesson(self):
+    def lessons(self):
         return self.lesson_set.all().order_by('position')
 
 class Lesson(models.Model):
@@ -35,7 +35,8 @@ class Lesson(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('courses:lesson-detail', kwargs={
+        return reverse('courses:lesson-detail',
+        kwargs={
             'course_slug': self.course.slug,
             'lesson_slug': self.slug
         })
